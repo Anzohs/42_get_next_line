@@ -6,7 +6,7 @@
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:40:09 by hladeiro          #+#    #+#             */
-/*   Updated: 2024/05/07 18:59:39 by hladeiro         ###   ########.fr       */
+/*   Updated: 2024/05/07 22:34:59 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,8 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	
-	ft_add_str(fd);
+	ft_add_str(list,fd);
 	str = ft_string(&list);
-	free_tlist(&list);
+	free_tlist(list);
 	return (str);
-}
-
-int	main()
-{
-	int	fd;
-	fd = open("test.txt", O_RDONLY);
-	printf("\n");
-	get_next_line(fd);
 }

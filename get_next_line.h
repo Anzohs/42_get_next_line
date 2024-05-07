@@ -6,7 +6,7 @@
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:47:29 by hladeiro          #+#    #+#             */
-/*   Updated: 2024/05/03 20:16:07 by hladeiro         ###   ########.fr       */
+/*   Updated: 2024/05/07 22:34:55 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,14 @@ typedef struct s_list
 }			t_list;
 
 char *get_next_line(int fd);
+char *copy_str(char *p, t_list *list, int num);
+char  *ft_string(t_list **list);
+int	ft_length(char *content);
+t_list	*ft_list_last(t_list *list);
+void	ft_add_back(t_list **list, t_list *lista);
+int ft_brk(char *p);
+void    ft_add_str(t_list *list, int fd);
 t_list  *ft_new_list(char *content);
 void	free_tlist(t_list *list);
-
 
 #endif
