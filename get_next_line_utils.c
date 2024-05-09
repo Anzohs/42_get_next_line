@@ -87,11 +87,12 @@ static void	ft_lstadd_back(t_list **list, char	*str)
 	t_list	*last;
 	t_list	*new;
 
+	if (!str)
+		return (NULL);
 	last = ft_lst_last(*list);
 	new = malloc(sizeof(t_list));
 	new->content = str;
 	new->next = NULL;
-	printf("%s", new->content);
 	if (!last)
 		*list = new;
 	else
@@ -105,7 +106,7 @@ static char	*ft_get_clean_string(char *str)
 	i = 0;
 	while (str[i] && str[i] != '\n')
 		i++;
-	if(str[i] == '\n')
+	if(str[i] && str[i] == '\n')
 	{
 		i++;
 		return ((str + i));
@@ -130,10 +131,8 @@ void	ft_create_list(t_list **list, int fd)
 			return ;
 		}
 		str[i] = 0;
-		ft_lstadd_back(list, str);
-		free(str);
+		ft_lstadd_back(list, str);		
 	}
-
 }
 
 char	*ft_get_string(t_list *list)
@@ -146,7 +145,6 @@ char	*ft_get_string(t_list *list)
 	if (!str)
 		return (NULL);
 	ft_copy_str(list, str);
-	printf("testing string %s \n", str);
 	return (str);
 }
 
@@ -155,7 +153,7 @@ void	ft_clean_list(t_list **list)
 {
 	t_list	*new;
 	t_list	*t;
-	char	*s;
+	char	*p;
 
 	new = *list;
 	while (new->next)
@@ -164,8 +162,20 @@ void	ft_clean_list(t_list **list)
 		free(new);
 		new = t;
 	}
-	s = ft_get_clean_string(new->content);
-	if (s)
-		ft_lstadd_back(list, s);
-	free(new);
+	p = ft_get_clean_string(new->content);
+	if (!p)
+	{
+		free(new);
+		return ;
+	}
+	ft_lstadd_back(list, p);
+	if (new->next)
+	{
+		t = new->next;
+		free(new);
+		new = t;
+	}
+	else
+		free(new);
+	
 }
