@@ -57,19 +57,22 @@ static	int	ft_str_len(t_list *list)
 
 static int	ft_space(t_list *list)
 {
-	char	*p;
-	t_list	*last;
+	int	i;
 
+	i = 0;
 	if (!list)
 		return (0);
-	last = ft_lst_last(list);
-	if (!last)
-		return (0);
-	p = last->content;
-	while (*p && *p != '\n')
-		p++;
-	if (*p == '\n')
-		return (1);
+	while (list)
+	{
+		while (list->content[i] && i < BUFFER_SIZE)
+		{
+			if (list->content[i] == '\n')
+				return (1);
+			i++;
+		}
+		list = list->next;
+		i = 0;
+	}
 	return (0);
 }
 
@@ -88,30 +91,38 @@ static void	ft_lstadd_back(t_list **list, char	*str)
 	t_list	*new;
 
 	if (!str)
-		return (NULL);
+		return ;
 	last = ft_lst_last(*list);
 	new = malloc(sizeof(t_list));
-	new->content = str;
-	new->next = NULL;
+	if (!new)
+		return ;
 	if (!last)
 		*list = new;
 	else
 		last->next = new;
+	new->content = str;
+	new->next = NULL;
 }
 
 static char	*ft_get_clean_string(char *str)
 {
 	int	i;
+	int	j;
+	char	*s;
 
 	i = 0;
+	j = 0;
+	if(!str)
+		return (NULL);
+	s = malloc(BUFFER_SIZE + 1);
+	if (!s)
+		return (NULL);
 	while (str[i] && str[i] != '\n')
 		i++;
-	if(str[i] && str[i] == '\n')
-	{
-		i++;
-		return ((str + i));
-	}
-	return (NULL);
+	while(str[i] && str[++i])
+		s[j++] = str[i];
+	s[j] = 0;
+	return (s);	
 }
 
 void	ft_create_list(t_list **list, int fd)
@@ -151,31 +162,32 @@ char	*ft_get_string(t_list *list)
 	
 void	ft_clean_list(t_list **list)
 {
-	t_list	*new;
 	t_list	*t;
 	char	*p;
 
-	new = *list;
-	while (new->next)
+	if (!*list)
+		return ;
+	while ((*list)->next)
 	{
-		t = new->next;
-		free(new);
-		new = t;
+		t = (*list)->next;
+		free((*list)->content);
+		free(*(list));
+		*list = t;
 	}
-	p = ft_get_clean_string(new->content);
+	p = ft_get_clean_string((*list)->content);
 	if (!p)
 	{
-		free(new);
+		free((*list)->content);
+		free(*list);
 		return ;
 	}
 	ft_lstadd_back(list, p);
-	if (new->next)
+	if ((*list)->next)
 	{
-		t = new->next;
-		free(new);
-		new = t;
+		t = (*list)->next;
+		free((*list)->content);
+		free(*list);
+		*list = t;
 	}
-	else
-		free(new);
-	
+
 }
