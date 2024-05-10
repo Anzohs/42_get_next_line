@@ -1,193 +1,91 @@
 #include "get_next_line.h"
 
-static t_list	*ft_lst_last(t_list *lst);
-
-static void	ft_copy_str(t_list *list, char *s)
+void	get_line(char *str, t_data *data)
 {
-	int	i;
-	int	j;
+	char *read_line;
 
-	if (!list)
+	while (str[data->i] && str[data->i] != '\n')
+		data->i++;
+	data->n = str[data->i] == '\n';
+	data->j += ((str[data->i] == '\n') + data->i);
+	read_line = malloc(data->j + 1);
+	if (!read_line)
 		return ;
-	j = 0;
-	while (list)
+	data->j = 0;
+	data->i = 0;
+	while (data->line[data->i] && data->line)
+		read_line[data->i++] = data->line[data->j++];
+	data->j = 0;
+	while (str[data->j])
 	{
-		i = 0;
-		while (list->content[i])
+		read_line[data->j] = str[data->j];
+		if(str[data->j == '\n'])
 		{
-			if (list->content[i] == '\n')
-			{
-				s[j++] = '\n';
-				s[j] = '\0';
-				return ;
-			}
-			s[j] = list->content[i];
-			j++;
-			i++;
-		}
-		list = list->next;
-	}
-	s[j] = '\0';
-}
-
-static	int	ft_str_len(t_list *list)
-{
-	t_list	*temp;
-	int	i;
-	int	len;
-
-	temp = list;
-	if (!list)
-		return (0);
-	len = 0;
-	while (temp)
-	{
-		i = 0;
-		while (temp->content[i])
-		{
-			if (temp->content[i] == '\n')
-				return(++len);
-			i++;
-			len++;
-		}
-		temp = temp->next;
-	}
-	return (len);
-}
-
-static int	ft_space(t_list *list)
-{
-	int	i;
-
-	i = 0;
-	if (!list)
-		return (0);
-	while (list)
-	{
-		while (list->content[i] && i < BUFFER_SIZE)
-		{
-			if (list->content[i] == '\n')
-				return (1);
-			i++;
-		}
-		list = list->next;
-		i = 0;
-	}
-	return (0);
-}
-
-static t_list	*ft_lst_last(t_list *lst)
-{
-	if(!lst)
-		return (NULL);
-	while (lst->next)
-		lst = lst->next;
-	return (lst);
-}
-
-static void	ft_lstadd_back(t_list **list, char	*str)
-{
-	t_list	*last;
-	t_list	*new;
-
-	if (!str)
-		return ;
-	last = ft_lst_last(*list);
-	new = malloc(sizeof(t_list));
-	if (!new)
-		return ;
-	if (!last)
-		*list = new;
-	else
-		last->next = new;
-	new->content = str;
-	new->next = NULL;
-}
-
-static char	*ft_get_clean_string(char *str)
-{
-	int	i;
-	int	j;
-	char	*s;
-
-	i = 0;
-	j = 0;
-	if(!str)
-		return (NULL);
-	s = malloc(BUFFER_SIZE + 1);
-	if (!s)
-		return (NULL);
-	while (str[i] && str[i] != '\n')
-		i++;
-	while(str[i] && str[++i])
-		s[j++] = str[i];
-	s[j] = 0;
-	return (s);	
-}
-
-void	ft_create_list(t_list **list, int fd)
-{
-	char	*str;
-	int	i;
-
-	while (!ft_space(*list))
-	{
-		str = malloc(BUFFER_SIZE + 1);
-		if (!str)
-			return ;
-		i = read(fd, str, BUFFER_SIZE);
-		if (!i)
-		{
-			free(str);
+			read_line[data->j + 1] = 0;
+			free(data->line);
+			data->line = read_line;
 			return ;
 		}
-		str[i] = 0;
-		ft_lstadd_back(list, str);		
+		data->j++;
 	}
+	free(data->line);
+	data->line = read_line; 
 }
 
-char	*ft_get_string(t_list *list)
+
+/* void	get_line(char *buf, t_data	*data)
 {
 	char	*str;
 
-	if(!list)
-		return (NULL);
-	str = malloc(ft_str_len(list) + 1);
+	while (buf[data->i] && buf[data->i] != '\n')
+		data->i++;
+	data->size += ((buf[data->i] == '\n') + data->i);
+	str = malloc(data->size + 1);
 	if (!str)
-		return (NULL);
-	ft_copy_str(list, str);
-	return (str);
+		return ;
+	data->i = 0;
+	while (data->line && data->line[data->i])
+		str[data->i++] = data->line[data->j++];
+	data->j = -1;
+	while (buf[data->len]) 
+	{
+		if (data->j != -1)
+			buf[data->j++] = buf[data->len];
+		else if (data->j == -1)
+			str[data->i++] = buf[data->len];
+		if (data->j == -1 && buf[data->len] == '\n')
+			data->j = 0;
+		buf[data->len++] = '\0';			
+	}
+	str[data->i] = 0;
+	free(data->line);
+	data->line = str;
 }
 
+
+char	*get_next_line(int fd)
+{
+	static char 	buf[BUFFER_SIZE + 1];
+	t_data		data;
+
+	if (fd < 0|| BUFFER_SIZE <= 0)
+		return (NULL);
+	data.line = NULL;
+	data.size = 0;
+	data.j = 2;
+	while (1)
+	{
+		if (*buf == '\0')
+			data.j = read(fd, buf, BUFFER_SIZE);
+		if (data.j < 1)
+			break;
+		data.i = 0;
+		data.j = 0;
+		data.len = 0;
+		get_line(buf, &data);
+		if (data.j != -1)
+			break;
+	}
 	
-void	ft_clean_list(t_list **list)
-{
-	t_list	*t;
-	char	*p;
-
-	if (!*list)
-		return ;
-	while ((*list)->next)
-	{
-		t = (*list)->next;
-		free((*list)->content);
-		free(*(list));
-		*list = t;
-	}
-	p = ft_get_clean_string((*list)->content);
-	if (!p)
-	{
-		free((*list)->content);
-		free(*list);
-		return ;
-	}
-	ft_lstadd_back(list, p);
-	if ((*list)->next)
-	{
-		t = (*list)->next;
-		free((*list)->content);
-		free(*list);
-		*list = t;
-	}
-
-}
+	return (data.line);
+} */
