@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/11 18:29:27 by hladeiro          #+#    #+#             */
+/*   Updated: 2024/05/11 20:41:08 by hladeiro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 char	*get_next_line(int fd)
@@ -15,7 +27,7 @@ char	*get_next_line(int fd)
 		if (!*str)
 			data.i = read(fd, str, BUFFER_SIZE);
 		if (data.i < 1)
-			return (NULL);
+			return (data.line);
 		data.i = 0;
 		data.j = 0;
 		data.len = 0;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/11 18:29:32 by hladeiro          #+#    #+#             */
+/*   Updated: 2024/05/11 20:39:47 by hladeiro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
  #include "get_next_line.h"
 
 void	ft_clean_str(char s[BUFFER_SIZE], t_data *data)
@@ -6,20 +18,21 @@ void	ft_clean_str(char s[BUFFER_SIZE], t_data *data)
 	data->i = 0;
 	while (s[data->len] && s[data->len] != '\n')
 		data->len++;
-	while (s[data->i])
+	if (s[data->len] == '\n' && s[data->len + 1])
 	{
 		if (s[data->len] == '\n')
 			s[data->len++] = 0;
-		s[data->i++] = s[data->len++];
+		while (s[data->i] || s[data->len])
+		{
+			s[data->i++] = s[data->len++];
+		}
 	}
+	else
+		*s = 0;
 }
 
-void	ft_get_line(char s[BUFFER_SIZE], t_data *data)
+static void	ft_get_len(char s[BUFFER_SIZE], t_data *data)
 {
-	char	*str;
-
-	if (!s)
-		return;
 	while (s[data->len] && s[data->len] != '\n')
 		data->len++;
 	if (s[data->len] == '\n')
@@ -30,27 +43,40 @@ void	ft_get_line(char s[BUFFER_SIZE], t_data *data)
 	while (data->line && data->line[data->i])
 		data->i++;
 	data->len += data->i;
+}
+
+void	ft_get_line(char s[BUFFER_SIZE], t_data *data)
+{
+	char	*str;
+
+	if (!s)
+		return;
+	ft_get_len(s, data);
 	str = malloc((data->len) + 1);
 	if (!str)
 		return ;
 	data->j = 0;
 	data->i = 0;
-	while (data->line[data->j])
+	while (data->line && data->line[data->j])
 		str[data->i++] = data->line[data->j++];
 	data->j = 0;
 	while (s[data->j])
 	{
-		s[data->j] = str[data->i];
-		if(str[data->i== '\n'])
+		str[data->i] = s[data->j++];
+		if(str[data->i] == '\n')
 		{
 			str[data->i + 1] = 0;
 			free(data->line);
 			data->line = str;
+			ft_clean_str(s, data);
 			return ;
 		}
-		data->j++;
+		data->i++;
 	}
-	free(data->line);
+	str[data->i] = 0;
+	ft_clean_str(s, data);
+	if (data->line)
+		free(data->line);
 	data->line = str;
 }
 
