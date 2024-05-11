@@ -6,11 +6,36 @@
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 18:29:32 by hladeiro          #+#    #+#             */
-/*   Updated: 2024/05/11 20:39:47 by hladeiro         ###   ########.fr       */
+/*   Updated: 2024/05/11 21:08:10 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
- #include "get_next_line.h"
+#include "get_next_line.h"
+
+static void	ft_copy_str(char buf[BUFFER_SIZE], char *str, t_data *data)
+{
+	while (data->line && data->line[data->j])
+		str[data->i++] = data->line[data->j++];
+	data->j = 0;
+	while (buf[data->j])
+	{
+		str[data->i] = buf[data->j++];
+		if (str[data->i] == '\n')
+		{
+			str[data->i + 1] = 0;
+			free(data->line);
+			data->line = str;
+			ft_clean_str(buf, data);
+			return ;
+		}
+		data->i++;
+	}
+	str[data->i] = 0;
+	if (data->line)
+		free(data->line);
+	data->line = str;
+	*buf = 0;
+}
 
 void	ft_clean_str(char s[BUFFER_SIZE], t_data *data)
 {
@@ -50,36 +75,15 @@ void	ft_get_line(char s[BUFFER_SIZE], t_data *data)
 	char	*str;
 
 	if (!s)
-		return;
+		return ;
 	ft_get_len(s, data);
 	str = malloc((data->len) + 1);
 	if (!str)
 		return ;
 	data->j = 0;
 	data->i = 0;
-	while (data->line && data->line[data->j])
-		str[data->i++] = data->line[data->j++];
-	data->j = 0;
-	while (s[data->j])
-	{
-		str[data->i] = s[data->j++];
-		if(str[data->i] == '\n')
-		{
-			str[data->i + 1] = 0;
-			free(data->line);
-			data->line = str;
-			ft_clean_str(s, data);
-			return ;
-		}
-		data->i++;
-	}
-	str[data->i] = 0;
-	ft_clean_str(s, data);
-	if (data->line)
-		free(data->line);
-	data->line = str;
+	ft_copy_str(s, str, data);
 }
-
 
 /* void	get_line(char *buf, t_data	*data)
 {

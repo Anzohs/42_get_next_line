@@ -6,7 +6,7 @@
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 18:29:27 by hladeiro          #+#    #+#             */
-/*   Updated: 2024/05/11 20:41:08 by hladeiro         ###   ########.fr       */
+/*   Updated: 2024/05/11 20:54:01 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*get_next_line(int fd)
 	static char	str[BUFFER_SIZE];
 	t_data		data;
 
-	if (fd < 1 || BUFFER_SIZE < 1)
+	if (fd < 1 || BUFFER_SIZE < 1 || fd > 1024)
 		return (NULL);
 	data.n = 0;
 	data.line = NULL;
