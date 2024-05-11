@@ -10,7 +10,6 @@ char	*get_next_line(int fd)
 	data.n = 0;
 	data.line = NULL;
 	data.i = 1;
-	data.len = 0;
 	while (!data.n)
 	{
 		if (!*str)
@@ -22,6 +21,5 @@ char	*get_next_line(int fd)
 		data.len = 0;
 		ft_get_line(str, &data);
 	}
-	data.n = 0;
 	return (data.line);
 }
