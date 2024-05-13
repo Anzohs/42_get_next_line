@@ -6,7 +6,7 @@
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 18:29:27 by hladeiro          #+#    #+#             */
-/*   Updated: 2024/05/11 20:54:01 by hladeiro         ###   ########.fr       */
+/*   Updated: 2024/05/13 21:13:23 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,7 @@ char	*get_next_line(int fd)
 			data.i = read(fd, str, BUFFER_SIZE);
 			if (data.i < 1 || data.i > BUFFER_SIZE)
 			{
-				if (data.i > BUFFER_SIZE)
-				{
-					if (data.line)
-						free(data.line);
-					data.line = NULL;
-				}
-				ft_clean_str(str, &data);
+				ft_error_handler(str, &data);
 				return (data.line);
 			}
 			str[data.i] = 0;

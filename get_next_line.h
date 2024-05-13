@@ -6,7 +6,7 @@
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 18:30:14 by hladeiro          #+#    #+#             */
-/*   Updated: 2024/05/11 21:02:26 by hladeiro         ###   ########.fr       */
+/*   Updated: 2024/05/13 21:14:19 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@ typedef struct s_data
 char	*get_next_line(int fd);
 void	ft_get_line(char s[BUFFER_SIZE], t_data *data);
 void	ft_clean_str(char s[BUFFER_SIZE], t_data *data);
+void	ft_error_handler(char s[BUFFER_SIZE], t_data *data);
 
 #endif
