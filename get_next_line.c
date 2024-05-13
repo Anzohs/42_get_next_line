@@ -14,23 +14,32 @@
 
 char	*get_next_line(int fd)
 {
-	static char	str[BUFFER_SIZE];
+	static char	str[BUFFER_SIZE + 1];
 	t_data		data;
 
-	if (fd < 1 || BUFFER_SIZE < 1 || fd > 1024)
+	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE < 1)
 		return (NULL);
 	data.n = 0;
-	data.line = NULL;
 	data.i = 1;
+	data.line = NULL;
 	while (!data.n)
 	{
 		if (!*str)
+		{
 			data.i = read(fd, str, BUFFER_SIZE);
-		if (data.i < 1)
-			return (data.line);
-		data.i = 0;
-		data.j = 0;
-		data.len = 0;
+			if (data.i < 1 || data.i > BUFFER_SIZE)
+			{
+				if (data.i > BUFFER_SIZE)
+				{
+					if (data.line)
+						free(data.line);
+					data.line = NULL;
+				}
+				ft_clean_str(str, &data);
+				return (data.line);
+			}
+			str[data.i] = 0;
+		}
 		ft_get_line(str, &data);
 	}
 	return (data.line);

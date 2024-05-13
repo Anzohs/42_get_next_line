@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
+#  define BUFFER_SIZE 1 
 # endif
 
 # include <stdio.h>
@@ -22,6 +22,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <stdbool.h>
+# include <limits.h>
 
 typedef struct s_data
 {
@@ -30,6 +31,7 @@ typedef struct s_data
 	char	*line;
 	int		j;
 	int		n;
+	size_t	full_len;
 }			t_data;
 
 char	*get_next_line(int fd);

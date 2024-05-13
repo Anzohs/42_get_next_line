@@ -41,15 +41,25 @@ void	ft_clean_str(char s[BUFFER_SIZE], t_data *data)
 {
 	data->len = 0;
 	data->i = 0;
+	data->full_len = 0;
+	while (s[data->full_len])
+		data->full_len++;
 	while (s[data->len] && s[data->len] != '\n')
 		data->len++;
-	if (s[data->len] == '\n' && s[data->len + 1])
+	if (s[data->len] == '\n')
 	{
 		if (s[data->len] == '\n')
 			s[data->len++] = 0;
-		while (s[data->i] || s[data->len])
-		{
-			s[data->i++] = s[data->len++];
+		while (s[data->i] || data->len < data->full_len)
+		{	
+			if (!s[data->len])
+			{	
+				while (data->i < data->len)
+					s[data->i++] = 0; 
+				return ;
+			}
+			else
+				s[data->i++] = s[data->len++];
 		}
 	}
 	else
@@ -58,6 +68,8 @@ void	ft_clean_str(char s[BUFFER_SIZE], t_data *data)
 
 static void	ft_get_len(char s[BUFFER_SIZE], t_data *data)
 {
+	data->i = 0;
+	data->len = 0;
 	while (s[data->len] && s[data->len] != '\n')
 		data->len++;
 	if (s[data->len] == '\n')
