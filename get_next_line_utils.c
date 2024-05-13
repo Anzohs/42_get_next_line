@@ -71,7 +71,7 @@ void	ft_clean_str(char s[BUFFER_SIZE], t_data *data)
 			if (!s[data->len])
 			{
 				while (data->i < data->len)
-					s[data->i++] = 0; 
+					s[data->i++] = 0;
 				return ;
 			}
 			else

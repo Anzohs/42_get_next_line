@@ -27,11 +27,13 @@ char	*get_next_line(int fd)
 		if (!*str)
 		{
 			data.i = read(fd, str, BUFFER_SIZE);
-			if (data.i < 1 || data.i > BUFFER_SIZE)
+			if (data.i > BUFFER_SIZE)
 			{
 				ft_error_handler(str, &data);
 				return (data.line);
 			}
+			if (data.i == 0)
+				return (data.line);
 			str[data.i] = 0;
 		}
 		ft_get_line(str, &data);
